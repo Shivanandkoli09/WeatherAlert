@@ -26,4 +26,17 @@ class WeatherService {
         let weatherResponse = try JSONDecoder().decode(WeatherResponse.self, from: data)
         return weatherResponse
     }
+    
+    func fetchWeatherOfCity(for city: String) async throws -> WeatherResponse {
+       let apiKey = "f9ff6af384daca23dcadfdaf24af81da"
+        let cityQuery = city.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? city
+        
+        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?q=\(cityQuery)&appid=\(apiKey)&units=metric") else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        
+        return try JSONDecoder().decode(WeatherResponse.self, from: data)
+    }
 }

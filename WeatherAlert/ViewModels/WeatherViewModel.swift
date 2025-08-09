@@ -15,15 +15,18 @@ class WeatherViewModel: ObservableObject {
     @Published var condition: String = ""
 
     private let service = WeatherService()
-
-    func getWeather() async {
+    
+    func getWeatherByCityName() async {
+        guard !cityName.isEmpty else { return }
+        
         do {
-            let weather = try await service.fetchWeather(lat: 28.6139, lon: 77.209) // Example: Delhi
+            let weather = try await service.fetchWeatherOfCity(for: cityName)
             cityName = weather.name
-            temperature = "\(Int(weather.main.temp))°C"
-            condition = weather.weather.first?.main ?? "N/A"
+            temperature = "\(Int(weather.main.temp))\u{00B0}C"
+            condition = weather.weather.first?.description ?? "NA"
         } catch {
-            print("Error fetching weather: \(error.localizedDescription)")
+            print("Error fetching weather: \(error)")
         }
+        
     }
 }

@@ -13,19 +13,32 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 16) {
             
-            Text(viewModel.cityName)
-                .font(.largeTitle)
+            TextField("Enter City Name", text: $viewModel.cityName)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .submitLabel(.search)
+                .onSubmit {
+                    Task {
+                        await viewModel.getWeatherByCityName()
+                    }
+                }
+           
+            Text("Weather Details")
+                .font(.title)
                 .bold()
-            Text(viewModel.temperature)
-                .font(.system(size: 48))
-            
-            Text(viewModel.condition)
+                
+            Text("City: \(viewModel.cityName)")
                 .font(.title2)
+            
+            Text("Temperature: \(viewModel.temperature)")
+                .font(.title2)
+            
+            Text("Condition: \(viewModel.condition)")
+                .font(.title2)
+            
+            Spacer()
         }
         .padding()
-        .task {
-            await viewModel.getWeather()
-        }
     }
 }
 
